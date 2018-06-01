@@ -19,6 +19,9 @@ let objArray = [
 				y: 0,
 				z: 0
 			}
+		},
+		SendMessage: function(methodName, value, options) {
+			// ...
 		}
 	}
 ];
