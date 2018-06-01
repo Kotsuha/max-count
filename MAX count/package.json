@@ -1,4 +1,7 @@
 {
   "name": "max-count",
-  "version": ""
+  "version": "",
+  "dependencies": {
+    "request-promise": "^4.2.2"
+  }
 }

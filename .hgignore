@@ -1,2 +1,3 @@
 syntax: glob
 MAX count.sublime-workspace
+MAX count/node_modules/
