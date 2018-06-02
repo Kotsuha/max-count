@@ -63,6 +63,7 @@ const myPage = new (function MyPage() { // TODO
 			const playerid = querystring.parse(href).playerid;
 			ids.push(playerid);
 		});
+		return ids;
 	}
 })();
 
@@ -168,12 +169,12 @@ function addRival(playerid) {
 }
 function deleteRival(playerid) {
 	return new Promise(function(resolve, reject) {
-		request[REMOVE_RIVAL](playerid).then(function($) {
-			const confirmed = confirm[REMOVE_RIVAL](playerid, $);
+		request[DELETE_RIVAL](playerid).then(function($) {
+			const confirmed = confirm[DELETE_RIVAL](playerid, $);
 			if (confirmed) {
 				resolve($);
 			} else {
-				reject(UNSUCCESSFUL[REMOVE_RIVAL]);
+				reject(UNSUCCESSFUL[DELETE_RIVAL]);
 			}
 		}).catch(function(err) {
 			reject(err);
