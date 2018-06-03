@@ -196,6 +196,12 @@ const setUser = function(lr2id, password) {
 	user.password = password;
 	return this;
 };
+const getUserCensored = function() {
+	return {
+		user: user.lr2id,
+		password: user.password.replace(/./g, "*")
+	};
+};
 
 
 function login(lr2id = user.lr2id, password = user.password) {
@@ -219,6 +225,7 @@ const lr2ir = {
 		requestAndConfirm: requestAndConfirm,
 	},
 	setUser: setUser,
+	getUserCensored: getUserCensored,
 	login: login,
 	addRival: addRival,
 	deleteRival: deleteRival
