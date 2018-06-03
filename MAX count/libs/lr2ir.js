@@ -47,7 +47,7 @@ const isExpired = function() {
 			timeExp = Date.parse(expires);
 		result = (timeNow >= timeExp);
 	}
-	console.log("isExpired() 結果:", result); // TODO
+	if (result) console.log("isExpired() 結果:", result); // TODO
 	return result;
 };
 
