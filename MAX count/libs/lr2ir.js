@@ -75,7 +75,12 @@ const SERVICE = {
 const { LOGIN, ADD_RIVAL, DELETE_RIVAL } = SERVICE;
 
 
-const { request, confirm } = (function() {
+const UNSUCCESSFUL = {};
+UNSUCCESSFUL[LOGIN] = "Failed to login. Maybe ID or password is wrong."; // "[エラー]不正なIDです" "[エラー]パスワードが違います" ...
+UNSUCCESSFUL[ADD_RIVAL] = "Failed to add rival.";
+UNSUCCESSFUL[DELETE_RIVAL] = "Failed to delete rival.";
+
+const { request, confirm, requestAndConfirm } = (function() {
 	
 	const commonOptions = {
 		method: "POST",
@@ -125,61 +130,73 @@ const { request, confirm } = (function() {
 		return ids.indexOf(playerid) === -1;
 	};
 
+	let requestAndConfirm = {};
+
+	// don't know how to DRY...
+	requestAndConfirm[LOGIN] = function(lr2id, password) {
+		return new Promise(function(resolve, reject) {
+			request[LOGIN](lr2id, password).then(function($) {
+				const confirmed = confirm[LOGIN](lr2id, $);
+				if (confirmed) {
+					resolve($);
+				} else {
+					reject(UNSUCCESSFUL[LOGIN]);
+				}
+			}).catch(function(err) {
+				reject(err); // TODO
+			});
+		});
+	};
+
+	requestAndConfirm[ADD_RIVAL] = function(playerid) {
+		return new Promise(function(resolve, reject) {
+			request[ADD_RIVAL](playerid).then(function($) {
+				const confirmed = confirm[ADD_RIVAL](playerid, $);
+				if (confirmed) {
+					resolve($);
+				} else {
+					reject(UNSUCCESSFUL[ADD_RIVAL]);
+				}
+			}).catch(function(err) {
+				reject(err);
+			});
+		});
+	};
+
+	requestAndConfirm[DELETE_RIVAL] = function(playerid) {
+		return new Promise(function(resolve, reject) {
+			request[DELETE_RIVAL](playerid).then(function($) {
+				const confirmed = confirm[DELETE_RIVAL](playerid, $);
+				if (confirmed) {
+					resolve($);
+				} else {
+					reject(UNSUCCESSFUL[DELETE_RIVAL]);
+				}
+			}).catch(function(err) {
+				reject(err);
+			});
+		});
+	};
+
 	return {
 		request: request, 
-		confirm: confirm
+		confirm: confirm,
+		requestAndConfirm: requestAndConfirm
 	};
 
 })();
 
 
-const UNSUCCESSFUL = {};
-UNSUCCESSFUL[LOGIN] = "Failed to login. Maybe ID or password is wrong."; // "[エラー]不正なIDです" "[エラー]パスワードが違います" ...
-UNSUCCESSFUL[ADD_RIVAL] = "Failed to add rival.";
-UNSUCCESSFUL[DELETE_RIVAL] = "Failed to delete rival.";
-
-// don't know how to DRY...
-function login(lr2id, password) { // TODO test
-	return new Promise(function(resolve, reject) {
-		request[LOGIN](lr2id, password).then(function($) {
-			const confirmed = confirm[LOGIN](lr2id, $);
-			if (confirmed) {
-				resolve($);
-			} else {
-				reject(UNSUCCESSFUL[LOGIN]);
-			}
-		}).catch(function(err) {
-			reject(err); // TODO
-		});
-	});
+function login(lr2id, password) {
+	return requestAndConfirm[LOGIN](lr2id, password);
 }
 function addRival(playerid) {
-	return new Promise(function(resolve, reject) {
-		request[ADD_RIVAL](playerid).then(function($) {
-			const confirmed = confirm[ADD_RIVAL](playerid, $);
-			if (confirmed) {
-				resolve($);
-			} else {
-				reject(UNSUCCESSFUL[ADD_RIVAL]);
-			}
-		}).catch(function(err) {
-			reject(err);
-		});
-	});
+	let loginPromise = isExpired() ? login() : Promise.resolve();
+	return loginPromise.then(() => requestAndConfirm[ADD_RIVAL](playerid));
 }
 function deleteRival(playerid) {
-	return new Promise(function(resolve, reject) {
-		request[DELETE_RIVAL](playerid).then(function($) {
-			const confirmed = confirm[DELETE_RIVAL](playerid, $);
-			if (confirmed) {
-				resolve($);
-			} else {
-				reject(UNSUCCESSFUL[DELETE_RIVAL]);
-			}
-		}).catch(function(err) {
-			reject(err);
-		});
-	});
+	let loginPromise = isExpired() ? login() : Promise.resolve();
+	return loginPromise.then(() => requestAndConfirm[DELETE_RIVAL](playerid));
 }
 
 
@@ -187,6 +204,7 @@ const lr2ir = {
 	SERVICE: SERVICE,
 	request: request,
 	confirm: confirm,
+	requestAndConfirm: requestAndConfirm,
 	login: login,
 	addRival: addRival,
 	deleteRival: deleteRival
