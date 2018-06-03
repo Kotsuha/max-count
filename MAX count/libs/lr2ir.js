@@ -187,7 +187,18 @@ const { request, confirm, requestAndConfirm } = (function() {
 })();
 
 
-function login(lr2id, password) {
+let user = {
+	lr2id: "",
+	password: ""
+};
+const setUser = function(lr2id, password) {
+	user.lr2id = lr2id;
+	user.password = password;
+	return this;
+};
+
+
+function login(lr2id = user.lr2id, password = user.password) {
 	return requestAndConfirm[LOGIN](lr2id, password);
 }
 function addRival(playerid) {
@@ -202,9 +213,12 @@ function deleteRival(playerid) {
 
 const lr2ir = {
 	SERVICE: SERVICE,
-	request: request,
-	confirm: confirm,
-	requestAndConfirm: requestAndConfirm,
+	raw: { // TODO rename ?
+		request: request,
+		confirm: confirm,
+		requestAndConfirm: requestAndConfirm,
+	},
+	setUser: setUser,
 	login: login,
 	addRival: addRival,
 	deleteRival: deleteRival
