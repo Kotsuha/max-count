@@ -13,6 +13,6 @@ function loginOrNot() {
 }
 
 loginOrNot()
-.then(() => { 
-	server.run();
-});
+	.then(() => { 
+		server.run();
+	});
