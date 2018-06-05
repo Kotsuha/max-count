@@ -4,6 +4,15 @@
 // https://stackoverflow.com/questions/10843572/how-to-create-javascript-constants-as-properties-of-objects-using-const-keyword
 // https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/enum
 // named constants
+
+/**
+ * A simple enumerator
+ *
+ * @class      Enumerator enumerator
+ * @param      {string}  value   Feel free to give ball ache values so that
+ *                               you'll only want to access things via the
+ *                               enumerations you defined
+ */
 function Enumerator(value) {
 	Object.defineProperty(this, "value", {
 		value: value,
