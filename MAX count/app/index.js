@@ -1,6 +1,6 @@
 "use strict";
 
-const foon = require("./libs/logger");
+const foon = require("libs/logger");
 foon.setPrefixToFoon();
 foon.log("Start");
 

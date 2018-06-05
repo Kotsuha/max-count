@@ -1,7 +1,7 @@
 "use strict";
 
 const { __rootdir, args, foon } = require("./common");
-const lr2ir = require(__rootdir + "/libs/lr2ir");
+const lr2ir = require("libs/lr2ir");
 const server = require(__rootdir + "/server");
 
 function loginOrNot() {
