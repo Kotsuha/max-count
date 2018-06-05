@@ -64,7 +64,7 @@ const myPage = new (function MyPage() { // TODO
 			ids.push(playerid);
 		});
 		return ids;
-	}
+	};
 })();
 
 const SERVICE = {
