@@ -5,7 +5,7 @@ foon.setPrefixToFoon();
 foon.log("Start");
 
 const common = require("./common");
-common.__rootdir = __dirname;
+common.__approot = __dirname;
 common.args = process.argv.slice(2);
 common.foon = foon;
 

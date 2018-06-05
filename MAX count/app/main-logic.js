@@ -1,8 +1,8 @@
 "use strict";
 
-const { __rootdir, args, foon } = require("./common");
+const { __approot, args, foon } = require("./common");
 const lr2ir = require("libs/lr2ir");
-const server = require(__rootdir + "/server");
+const server = require(__approot + "/server");
 
 function loginOrNot() {
 	return args.length === 2 

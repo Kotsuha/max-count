@@ -1,7 +1,7 @@
 "use strict";
 
-const { __rootdir, foon } = require("./common");
-const CONFIG = require(__rootdir + "/config/config");
+const { __approot, foon } = require("./common");
+const CONFIG = require(__approot + "/config/config");
 
 module.exports.run = function() {
 	const express = require("express");
@@ -9,7 +9,7 @@ module.exports.run = function() {
 	const server = require("http").createServer(app);
 
 	const prefix = "",
-	      root = require("path").join(__rootdir, "public");
+	      root = require("path").join(__approot, "public");
 	app.use(prefix, express.static(root));
 
 	server.listen(CONFIG.PORT, function() {
