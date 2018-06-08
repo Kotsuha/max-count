@@ -9,6 +9,7 @@ rules:
   indent:
     - error
     - tab
+    - ignoreComments: true
   # linebreak-style:
   #   - error
   #   - windows
