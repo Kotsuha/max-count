@@ -5,7 +5,7 @@ const lr2ir = require("app/lr2ir");
 const { 
 	PlayDataEntry, 
 	RankingEntry 
-} = require("./entry");
+} = require("./model/entry");
 
 
 class MyList {
