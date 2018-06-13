@@ -32,8 +32,8 @@ PlayDataEntry.prototype.toString = function() {
  * @param      {string}  playerid  playerid
  * @param      {string}  score     スコア
  */
-function RankingEntry(player, playerid, score) {
-	// this.ranking = ranking;
+function RankingEntry(ranking, player, playerid, score) {
+	this.ranking = ranking;
 	this.player = player;
 	this.playerid = playerid;
 	// this.dan = dan;
@@ -105,13 +105,15 @@ PlayDataEntry.createFromRow = function($row) {
 
 RankingEntry.createFromRow = function($dataRow /*, $commentRow*/) {
 	const $cells = $dataRow.find("td");
-	const $playerCell = $cells.eq(1),
+	const $rankingCell = $cells.eq(0),
+	      $playerCell = $cells.eq(1),
 	      $scoreCell = $cells.eq(5);
-	const player = $playerCell.text(),
+	const ranking = $rankingCell.text(),
+	      player = $playerCell.text(),
 	      href = $playerCell.find("a").first().prop("href"),
 	      playerid = querystring.parse(href).playerid,
 	      score = $scoreCell.text();
-	const entry = new RankingEntry(player, playerid, score);
+	const entry = new RankingEntry(ranking, player, playerid, score);
 	return entry;
 };
 
