@@ -20,7 +20,7 @@ function PlayDataEntry(no, title, bmsid, clear, ranking) {
 }
 
 PlayDataEntry.prototype.toString = function() {
-	return `${this.no.padStart(3)} ${this.title} [${this.bmsid}] ${this.clear} ${this.ranking}`;
+	return `${this.no} ${this.title} [${this.bmsid}] ${this.clear} ${this.ranking}`;
 };
 
 
