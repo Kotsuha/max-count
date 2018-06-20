@@ -55,14 +55,8 @@ const MaxCountChecker = function(lr2id, goal, report) {
 			for (const entry of rEntries) {
 				if (entry.isYou(lr2id) && entry.isMax()) {
 					const title = SongRanking.getSongTitle($);
-					maxInfo = new MaxInfo(
-						bmsid, 
-						title, 
-						entry.ranking, 
-						entry.player, 
-						entry.playerid, 
-						entry.score
-					);
+					const {ranking, player, playerid, score} = entry;
+					maxInfo = new MaxInfo(bmsid, title, ranking, player, playerid, score);
 					break;
 				}
 			}
