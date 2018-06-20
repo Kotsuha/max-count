@@ -57,7 +57,7 @@ function isFC(clear) {
 }
 
 function isTop(ranking) {
-	return ranking.indexOf("1/") === 0; // Am I missing something?
+	return ranking.indexOf("1/") === 0 || ranking === "1"; // for both mylist and ranking
 }
 
 function isMax(score) {
