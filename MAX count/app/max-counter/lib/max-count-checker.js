@@ -3,29 +3,27 @@
 const lr2ir = require("app/lr2ir");
 const { MyList, SongRanking } = require("./util");
 const MaxInfo = require("./model/max-info");
+const makeAutoRetryFn = require("app/oops-retry");
 const wait = require("app/wait").dottedWait;
-const oopsRetry = require("app/oops-retry");
 
 const Promise = require("bluebird");
-Promise.config({
-	// Enable cancellation
-	cancellation: true,
-});
 const bluebird = Promise.resolve;
+Promise.config({
+	cancellation: true, // Enable cancellation
+});
 
 
-const WAIT_MS = {
+const WAIT = {
 	REQUEST: 3000,
 	RETRY: 10000,
 };
 
-const OOPS_NUM = {
+const OOPS = {
 	RETRY: 2
 };
 
 const MaxCountChecker = function(lr2id, goal, report) {
 
-	// act as the last check result
 	this.maxInfos = [];
 	this.push = function(maxInfo) {
 		this.maxInfos.push(maxInfo);
@@ -40,26 +38,24 @@ const MaxCountChecker = function(lr2id, goal, report) {
 		.then(($) => {
 			this.empty();
 			const pdEntries = MyList.getPlayDataEntries($);
-			
 
-			const collectMaxUntilPassed = (entry) => {
+			const collectMaxInfosUntilPassed = (pdEntry) => {
 				if (this.isPassed()) {
 					return Promise.resolve();
 				}
-
-				report("Check " + entry.toString());
-				return this.autoRetry.checkSongRanking(entry.bmsid, "1")
+				report("Check " + pdEntry.toString());
+				return this.autoRetry.checkSongRanking(pdEntry.bmsid, "1")
 					.then((maxInfo) => {
 						if (maxInfo === undefined) return;
 						this.push(maxInfo);
 						report(maxInfo.score + " -> MAX: " + this.maxInfos.length + "\n");
 					})
-					.then(() => wait(WAIT_MS.REQUEST))
+					.then(() => wait(WAIT.REQUEST))
 					.catch((err) => Promise.reject(err));
 			};
 
 			return Promise
-				.each(pdEntries, collectMaxUntilPassed)
+				.each(pdEntries, collectMaxInfosUntilPassed)
 				.then(() => this.maxInfos)
 				.catch((err) => Promise.reject(err));
 		})
@@ -84,27 +80,12 @@ const MaxCountChecker = function(lr2id, goal, report) {
 		.catch((err) => Promise.reject(err));
 
 	this.autoRetry = {};
-	this.autoRetry.checkSongRanking = oopsRetry(
-		this.checkSongRanking, OOPS_NUM.RETRY, WAIT_MS.RETRY);
+	this.autoRetry.checkSongRanking = makeAutoRetryFn(
+		this.checkSongRanking, 
+		OOPS.RETRY, 
+		WAIT.RETRY
+	);
 };
 
 
 module.exports = MaxCountChecker;
-
-
-const logger = require("app/logger");
-const mcc = new MaxCountChecker("100746", 15, logger.log);
-let p = mcc.checkMyList(1)
-// mcc.checkSongRanking.autoRetry(10, 1)
-	.then(function(mi) {
-		logger.log(mi);
-	})
-	.catch(function(err) {
-		logger.log(err);
-	});
-
-wait(60000, "-")
-	.then(() => {
-		logger.log("cancel()");
-		p.cancel();
-	});
