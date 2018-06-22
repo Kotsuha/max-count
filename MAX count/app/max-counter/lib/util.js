@@ -36,9 +36,11 @@ class MyList {
 		let nextPage;
 		$a.each((i, el) => {
 			const $el = $(el);
-			const text = $el.text();
-			const href = $el.prop("href");
-			const { mode, page } = querystring.parse(href);
+			const text = $el.text(),
+			      href = $el.prop("href");
+			const hrefParsed = querystring.parse(href);
+			const mode = hrefParsed["search.cgi?mode"],
+			      page = hrefParsed.page;
 			if (text === ">>" && mode === "mylist") {
 				nextPage = page;
 				return false;
