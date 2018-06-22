@@ -12,6 +12,8 @@ Promise.config({
 	cancellation: true, // Enable cancellation
 });
 
+const {FC, TOP} = require("./const/badge");
+
 
 const WAIT = {
 	REQUEST: 3000,
@@ -24,6 +26,31 @@ const OOPS = {
 
 const MaxCountChecker = function(lr2id, goal, report) {
 
+	this.config = function(obj) {
+		if (obj.hasOwnProperty("top")) filters[TOP].enabled = obj.top;
+		return this;
+	};
+
+	const filters = {
+		[FC]: {
+			enabled: true,
+			check: (pdEntry) => pdEntry.isFC()
+		},
+		[TOP]: {
+			enabled: true,
+			check: (pdEntry) => pdEntry.isTop()
+		}
+	};
+	const isPM = function(pdEntry) {
+		for (const type in filters) {
+			const filter = filters[type];
+			if (filter.enabled && filter.check(pdEntry) === false) {
+				return false;
+			}
+		}
+		return true;
+	};
+
 	this.checkMyList = function(page) {
 		const maxInfos = [];
 		let nextPage;
@@ -34,7 +61,7 @@ const MaxCountChecker = function(lr2id, goal, report) {
 				nextPage = MyList.getNextPage($);
 				const pdEntries = MyList.getPlayDataEntries($);
 				const collectMaxInfosUntilPassed = (pdEntry) => {
-					if (isPassed()) {
+					if (isPM(pdEntry) === false || isPassed()) {
 						return Promise.resolve();
 					}
 					report("Check " + pdEntry.toString());
