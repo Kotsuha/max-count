@@ -52,7 +52,26 @@ const MaxCountChecker = function(lr2id, goal, report) {
 		return true;
 	};
 
+	const isNoMorePM = (pdEntry) => pdEntry.isFC() === false;
+
 	const isPassed = (maxInfos) => maxInfos.length >= goal;
+
+	this.check = function() {
+		const maxInfos = [];
+
+		const collect = (page = 1) => bluebird()
+			.then(() => this.checkMyList(page, maxInfos))
+			.then(([maxInfos, nextPage, noMorePM]) => {
+				const noMorePage = (nextPage === undefined);
+				if (isPassed(maxInfos) || noMorePM || noMorePage) {
+					return maxInfos;
+				}
+				return collect(nextPage);
+			})
+			.catch((err) => Promise.reject(err));
+
+		return collect();
+	};
 
 	this.checkMyList = function(page, maxInfos = []) {
 		return bluebird()
@@ -60,8 +79,13 @@ const MaxCountChecker = function(lr2id, goal, report) {
 			.then(($) => {
 				const nextPage = MyList.getNextPage($);
 				const pdEntries = MyList.getPlayDataEntries($);
-				const collectMaxInfos = (pdEntry) => {
+				let noMorePM = false;
+				const collectMaxInfoByPDEntry = (pdEntry) => {
 					if (!isPM(pdEntry) || isPassed(maxInfos)) {
+						if (noMorePM === false && isNoMorePM(pdEntry)) {
+							noMorePM = true;
+							report("The end of PM");
+						}
 						// report("Skip " + pdEntry.toString());
 						return Promise.resolve();
 					}
@@ -76,12 +100,12 @@ const MaxCountChecker = function(lr2id, goal, report) {
 						.catch((err) => Promise.reject(err));
 				};
 				return Promise
-					.each(pdEntries, collectMaxInfos)
-					.then(() => [maxInfos, nextPage])
+					.each(pdEntries, collectMaxInfoByPDEntry)
+					.then(() => [maxInfos, nextPage, noMorePM])
 					.catch((err) => Promise.reject(err));
 			})
-			.catch((err) => Promise.reject(err))
-			.finally(() => report(maxInfos));
+			.catch((err) => Promise.reject(err));
+			// .finally(() => report(maxInfos));
 	};
 
 	this.checkSongRanking = function(bmsid, page) {
