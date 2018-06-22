@@ -5,7 +5,7 @@ const lr2ir = require("app/lr2ir");
 const { 
 	PlayDataEntry, 
 	RankingEntry 
-} = require("./entry");
+} = require("./model/entry");
 
 
 class MyList {
@@ -36,6 +36,10 @@ class MyList {
 
 
 class SongRanking {
+	static getSongTitle($) {
+		return $("h1").first().text();
+	}
+
 	static getRankingTable($) {
 		return $("table").eq(3); // 0 情報 1-2 総合ステータス 3 ランキング
 	}

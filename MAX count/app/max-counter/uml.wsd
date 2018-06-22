@@ -1,0 +1,74 @@
+@startuml
+start
+
+partition 心安 {
+	:open ○○のマイページ;
+	note: mind the FULLCOMBO number\n要用嗎?
+}
+
+repeat
+	partition Collecting_Phase {
+		:open ○○のプレイデータ;
+		note: 這一步相當於拿到 cheerio 的 $
+
+		:get all the $row;
+
+		if ($rows is empty ?)
+			(✖)
+		endif
+
+		partition Filter {
+			while (more $row && noMorePM is false ?)
+				:new PlayDataEntry();
+				if (is PM?) then (yes)
+					:pmEntries.push();
+				elseif (is non-FC?) then (yes)
+					:noMorePM = true;
+				else (no)
+				endif
+			endwhile (over or non-FC encountered)
+		}
+	}
+	floating note
+	基本上就是
+	* 篩選出 PM
+	* 如果看到非 FC 就標示 noMorePM 為 true
+	end note
+
+	partition Checking_Phase {
+		while (for each) is (more?)
+			:open song ランキング;
+			:find your max record;
+			if (found?) then (yes)
+				:maxInfos.push();
+				if (100 reached?) then (yes)
+					(✔)
+					detach
+				endif
+			else (no)
+			endif
+		endwhile (over)
+		note: 此頁檢查完了!
+	}
+
+	if (noMorePM?) then (yes)
+		-> 在 Collectiing Phase 遇到\n非 FC 的歌曲了;
+		(✖)
+		detach
+	endif
+
+repeat while (more pages?) -> mlPage += 1;
+note: >>
+-> 恭喜你，應該是所有歌都 FC 才能走到這一步!;
+(✖)
+detach
+
+fork
+(✔)
+fork again
+(✖)
+end fork
+:匯報所有蒐集到的 MaxInfo;
+stop
+
+@enduml
