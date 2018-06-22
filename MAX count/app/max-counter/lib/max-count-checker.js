@@ -24,60 +24,54 @@ const OOPS = {
 
 const MaxCountChecker = function(lr2id, goal, report) {
 
-	this.maxInfos = [];
-	this.push = function(maxInfo) {
-		this.maxInfos.push(maxInfo);
-	};
-	this.empty = function() {
-		this.maxInfos.length = 0;
-	};
-	this.isPassed = () => this.maxInfos.length >= goal;
-
-	this.checkMyList = (page) => bluebird()
-		.then(( ) => lr2ir.openMyList(lr2id, "clear", page))
-		.then(($) => {
-			this.empty();
-			const pdEntries = MyList.getPlayDataEntries($);
-
-			const collectMaxInfosUntilPassed = (pdEntry) => {
-				if (this.isPassed()) {
-					return Promise.resolve();
-				}
-				report("Check " + pdEntry.toString());
-				return this.autoRetry.checkSongRanking(pdEntry.bmsid, "1")
-					.then((maxInfo) => {
-						if (maxInfo === undefined) return;
-						this.push(maxInfo);
-						report(maxInfo.score + " -> MAX: " + this.maxInfos.length + "\n");
-					})
-					.then(() => wait(WAIT.REQUEST))
+	this.checkMyList = function(page) {
+		const maxInfos = [];
+		const isPassed = () => maxInfos.length >= goal;
+		return bluebird()
+			.then(( ) => lr2ir.openMyList(lr2id, "clear", page))
+			.then(($) => {
+				const pdEntries = MyList.getPlayDataEntries($);
+				const collectMaxInfosUntilPassed = (pdEntry) => {
+					if (isPassed()) {
+						return Promise.resolve();
+					}
+					report("Check " + pdEntry.toString());
+					return this.autoRetry.checkSongRanking(pdEntry.bmsid, "1")
+						.then((maxInfo) => {
+							if (maxInfo === undefined) return;
+							maxInfos.push(maxInfo);
+							report(maxInfo.score + " -> MAX: " + maxInfos.length + "\n");
+						})
+						.then(() => wait(WAIT.REQUEST))
+						.catch((err) => Promise.reject(err));
+				};
+				return Promise
+					.each(pdEntries, collectMaxInfosUntilPassed)
+					.then(() => maxInfos)
 					.catch((err) => Promise.reject(err));
-			};
+			})
+			.catch((err) => Promise.reject(err))
+			.finally(() => report(maxInfos));
+	};
 
-			return Promise
-				.each(pdEntries, collectMaxInfosUntilPassed)
-				.then(() => this.maxInfos)
-				.catch((err) => Promise.reject(err));
-		})
-		.catch((err) => Promise.reject(err))
-		.finally(() => report(this.maxInfos));
-
-	this.checkSongRanking = (bmsid, page) => bluebird()
-		.then(( ) => lr2ir.openSongRanking(bmsid, page))
-		.then(($) => {
-			let maxInfo;
-			const rEntries = SongRanking.getRankingEntries($);
-			for (const entry of rEntries) {
-				if (entry.isYou(lr2id) && entry.isMax()) {
-					const title = SongRanking.getSongTitle($);
-					const {ranking, player, playerid, score} = entry;
-					maxInfo = new MaxInfo(bmsid, title, ranking, player, playerid, score);
-					break;
+	this.checkSongRanking = function(bmsid, page) {
+		return bluebird()
+			.then(( ) => lr2ir.openSongRanking(bmsid, page))
+			.then(($) => {
+				let maxInfo;
+				const rEntries = SongRanking.getRankingEntries($);
+				for (const entry of rEntries) {
+					if (entry.isYou(lr2id) && entry.isMax()) {
+						const title = SongRanking.getSongTitle($);
+						const {ranking, player, playerid, score} = entry;
+						maxInfo = new MaxInfo(bmsid, title, ranking, player, playerid, score);
+						break;
+					}
 				}
-			}
-			return maxInfo;
-		})
-		.catch((err) => Promise.reject(err));
+				return maxInfo;
+			})
+			.catch((err) => Promise.reject(err));
+	};
 
 	this.autoRetry = {};
 	this.autoRetry.checkSongRanking = makeAutoRetryFn(
