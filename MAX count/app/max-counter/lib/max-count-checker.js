@@ -26,10 +26,12 @@ const MaxCountChecker = function(lr2id, goal, report) {
 
 	this.checkMyList = function(page) {
 		const maxInfos = [];
+		let nextPage;
 		const isPassed = () => maxInfos.length >= goal;
 		return bluebird()
 			.then(( ) => lr2ir.openMyList(lr2id, "clear", page))
 			.then(($) => {
+				nextPage = MyList.getNextPage($);
 				const pdEntries = MyList.getPlayDataEntries($);
 				const collectMaxInfosUntilPassed = (pdEntry) => {
 					if (isPassed()) {
@@ -47,7 +49,7 @@ const MaxCountChecker = function(lr2id, goal, report) {
 				};
 				return Promise
 					.each(pdEntries, collectMaxInfosUntilPassed)
-					.then(() => maxInfos)
+					.then(() => [maxInfos, nextPage])
 					.catch((err) => Promise.reject(err));
 			})
 			.catch((err) => Promise.reject(err))
