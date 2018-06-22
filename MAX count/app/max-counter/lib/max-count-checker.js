@@ -41,6 +41,7 @@ const MaxCountChecker = function(lr2id, goal, report) {
 			check: (pdEntry) => pdEntry.isTop()
 		}
 	};
+
 	const isPM = function(pdEntry) {
 		for (const type in filters) {
 			const filter = filters[type];
@@ -51,17 +52,17 @@ const MaxCountChecker = function(lr2id, goal, report) {
 		return true;
 	};
 
-	this.checkMyList = function(page) {
-		const maxInfos = [];
-		let nextPage;
-		const isPassed = () => maxInfos.length >= goal;
+	const isPassed = (maxInfos) => maxInfos.length >= goal;
+
+	this.checkMyList = function(page, maxInfos = []) {
 		return bluebird()
 			.then(( ) => lr2ir.openMyList(lr2id, "clear", page))
 			.then(($) => {
-				nextPage = MyList.getNextPage($);
+				const nextPage = MyList.getNextPage($);
 				const pdEntries = MyList.getPlayDataEntries($);
-				const collectMaxInfosUntilPassed = (pdEntry) => {
-					if (isPM(pdEntry) === false || isPassed()) {
+				const collectMaxInfos = (pdEntry) => {
+					if (!isPM(pdEntry) || isPassed(maxInfos)) {
+						// report("Skip " + pdEntry.toString());
 						return Promise.resolve();
 					}
 					report("Check " + pdEntry.toString());
@@ -75,7 +76,7 @@ const MaxCountChecker = function(lr2id, goal, report) {
 						.catch((err) => Promise.reject(err));
 				};
 				return Promise
-					.each(pdEntries, collectMaxInfosUntilPassed)
+					.each(pdEntries, collectMaxInfos)
 					.then(() => [maxInfos, nextPage])
 					.catch((err) => Promise.reject(err));
 			})
