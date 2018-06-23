@@ -16,7 +16,7 @@ const MSG = {
 	RIVAL_DONE: (lr2id) => `Done rivaling ${lr2id}. Please check.`,
 };
 
-const rivalRequest = function(lr2id, socket) {
+const rivalRequest = function(lr2id, socket, final=()=>{}) {
 
 	const log = function(message) {
 		foon.log(message);
@@ -25,6 +25,7 @@ const rivalRequest = function(lr2id, socket) {
 
 	if (tasks.hasOwnProperty(lr2id)) {
 		log(MSG.ALREADY_CHECKING(lr2id));
+		final();
 		return;
 	}
 
@@ -57,6 +58,7 @@ const rivalRequest = function(lr2id, socket) {
 		})
 		.finally(() => {
 			delete tasks[lr2id];
+			final();
 			log("over"); // TODO
 		});
 
@@ -68,7 +70,7 @@ const rivalRequest = function(lr2id, socket) {
 
 const cancelRivalRequest = function(lr2id, socket) {
 	if (tasks.hasOwnProperty(lr2id) === false || tasks[lr2id].socket !== socket) {
-		return;
+		return false;
 	}
 	tasks[lr2id].promise.cancel();
 	delete tasks[lr2id];

@@ -34,6 +34,16 @@
 				}
 			});
 
+			socket.on("users", function(data) {
+				updateTitle(data);
+			});
+
+			const updateTitle = function(users) {
+				let title = "(^^)";
+				if (users) title += " " + users;
+				document.title = title;
+			};
+
 			const $clear = $("#clear");
 			$clear.click(function() {
 				logger.value = "";
@@ -54,7 +64,7 @@
 				<label for="lr2id">LR2ID</label>
 				<input type="number" id="lr2id">
 				<input type="submit">
-				<input type="button" id="cancel" value="Cancel (only if you are on the same page)">
+				<input type="button" id="cancel" value="Cancel (only works if you didn't refresh the page)">
 			</form>
 		</div>
 		<div id="logger-container">

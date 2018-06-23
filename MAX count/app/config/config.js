@@ -2,5 +2,6 @@
 
 module.exports = Object.freeze({
 	PORT: 3000,
-	GOAL: 100
+	GOAL: 100,
+	MAX_USERS: 3,
 });
