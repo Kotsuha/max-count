@@ -3,8 +3,80 @@
 <head>
 	<meta charset="UTF-8">
 	<title></title>
+	<script src="http://code.jquery.com/jquery-3.3.1.min.js"></script>
+	<script src="/socket.io/socket.io.js"></script>
+	<script>
+		/* eslint-disable */
+		$(function() {
+			const socket = io();
+			
+			const $form = $("#form");
+			const $cancel = $("#cancel");
+			const $logger = $("#logger");
+			const logger = $logger[0];
+			const $scroll = $("#scroll");
+
+			$form.submit(function() {
+				const lr2id = $("#lr2id").val();
+				socket.emit("rival-request", lr2id);
+				return false;
+			});
+			$cancel.click(function() {
+				const lr2id = $("#lr2id").val();
+				socket.emit("cancel-rival-request", lr2id);
+			});
+
+			socket.on("log", function(data) {
+				console.log(data);
+				logger.value += (data + "\n");
+				if ($scroll.prop("checked")) {
+					$logger.scrollTop(logger.scrollHeight - $logger.height());
+				}
+			});
+
+			socket.on("users", function(data) {
+				updateTitle(data);
+			});
+
+			const updateTitle = function(users) {
+				let title = "(^^)";
+				if (users) title += " " + users;
+				document.title = title;
+			};
+
+			const $clear = $("#clear");
+			$clear.click(function() {
+				logger.value = "";
+			});
+		});
+	</script>
+	<style>
+		#logger {
+			background: black;
+			color: silver;
+		}
+	</style>
 </head>
 <body>
-	(^^)
+	<body>
+		<div id="form-container">
+			<form action="" id="form">
+				<label for="lr2id">LR2ID</label>
+				<input type="number" id="lr2id">
+				<input type="submit">
+				<input type="button" id="cancel" value="Cancel (only works if you didn't refresh the page)">
+			</form>
+		</div>
+		<div id="logger-container">
+			<textarea id="logger" cols="80" rows="10" readonly></textarea>
+		</div>
+		<div>
+			<button id="clear">Clear</button>
+			<input type="checkbox" id="scroll" checked><label for="scroll">Scroll</label>
+		</div>
+		<br>
+		<div>
+			<a href="http://www.dream-pro.info/~lavalse/LR2IR/search.cgi" target="_blank">Go to LR2IR</a>
+		</div>
 </body>
 </html>
