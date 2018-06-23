@@ -1,7 +1,7 @@
 "use strict";
 
 const { __approot } = require("./common");
-const { PATH, MESSAGE } = require(__approot + "/config/service");
+const { PATH, MESSAGE } = require(__approot + "/config/routes");
 
 const echo = require(__approot + "/service/echo");
 const rivalRequest = require(__approot + "/service/rival-request");

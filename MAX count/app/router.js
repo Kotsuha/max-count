@@ -1,7 +1,7 @@
 "use strict";
 
 const { __approot } = require("./common");
-const { PATH, MESSAGE } = require(__approot + "/config/service");
+const { PATH, MESSAGE } = require(__approot + "/config/routes");
 const sh = require(__approot + "/service-handler");
 
 module.exports.setUp = function({app, io}) {

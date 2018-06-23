@@ -3,8 +3,10 @@
 const PATH = {
 	ECHO: "/echo"
 };
+
 const MESSAGE = {
-	RIVAL_REQUEST: "rival-request"
+	LOG: "log",
+	RIVAL_REQUEST: "rival-request",
 };
 
 module.exports = {
