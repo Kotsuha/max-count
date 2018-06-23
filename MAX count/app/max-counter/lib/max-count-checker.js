@@ -96,8 +96,8 @@ const MaxCountChecker = function(lr2id, goal, log) {
 						if (noMorePM === false && isNoMorePM(pdEntry)) {
 							noMorePM = true;
 							log(`No more PM songs: ${pdEntry}`);
-							return Promise.resolve();
 						}
+						return Promise.resolve();
 					}
 
 					log("Check " + pdEntry.toString());
