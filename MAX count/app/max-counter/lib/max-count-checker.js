@@ -1,33 +1,35 @@
 "use strict";
 
+const Promise = require("bluebird");
+const bluebird = Promise.resolve;
+Promise.config({
+	cancellation: true,
+});
+
 const lr2ir = require("app/lr2ir");
 const { MyList, SongRanking } = require("./util");
+
+const { FC, TOP } = require("./const/badge");
 const MaxInfo = require("./model/max-info");
 const makeOopsRetryFn = require("app/oops-retry");
 const wait = require("app/wait").dottedWait;
 
-const Promise = require("bluebird");
-const bluebird = Promise.resolve;
-Promise.config({
-	cancellation: true, // Enable cancellation
-});
-
-const {FC, TOP} = require("./const/badge");
 
 
 const WAIT = {
 	REQUEST: 3000,
-	RETRY: 10000,
+	RETRY: 30000,
 };
+const OOPS = 3;
 
-const OOPS = {
-	RETRY: 3
-};
+const retryOpenMyList = makeOopsRetryFn(lr2ir.openMyList, OOPS, WAIT.RETRY);
+const retryOpenSongRanking = makeOopsRetryFn(lr2ir.openSongRanking, OOPS, WAIT.RETRY);
 
-const retryOpenMyList = makeOopsRetryFn(lr2ir.openMyList, OOPS.RETRY, WAIT.RETRY);
-const retryOpenSongRanking = makeOopsRetryFn(lr2ir.openSongRanking, OOPS.RETRY, WAIT.RETRY);
 
-const MaxCountChecker = function(lr2id, goal, report) {
+const MaxCountChecker = function(lr2id, goal, log) {
+
+	const isNoMorePM = (pdEntry) => pdEntry.isFC() === false;
+	const isPassed = (maxInfos) => maxInfos.length >= goal;
 
 	this.config = function(obj) {
 		if (obj.hasOwnProperty("top")) filters[TOP].enabled = obj.top;
@@ -55,68 +57,71 @@ const MaxCountChecker = function(lr2id, goal, report) {
 		return true;
 	};
 
-	const isNoMorePM = (pdEntry) => pdEntry.isFC() === false;
-
-	const isPassed = (maxInfos) => maxInfos.length >= goal;
 
 	this.check = function() {
 		const maxInfos = [];
 
-		const collect = (page = 1) => bluebird()
+		const checkRecursively = (page = 1) => bluebird()
 			.then(() => this.checkMyList(page, maxInfos))
 			.then(([maxInfos, nextPage, noMorePM]) => {
 				const noMorePage = (nextPage === undefined);
 				if (isPassed(maxInfos) || noMorePM || noMorePage) {
 					return maxInfos;
 				}
-				return collect(nextPage);
+				return checkRecursively(nextPage);
 			})
-			.catch((err) => Promise.reject(err));
+			.catch(Promise.reject);
 
-		return collect();
+		return checkRecursively();
 	};
 
 	this.checkMyList = function(page, maxInfos = []) {
 		return bluebird()
-			.then(( ) => retryOpenMyList(lr2id, "clear", page))
+			.then(() => retryOpenMyList(lr2id, "clear", page))
 			.then(($) => {
-				const nextPage = MyList.getNextPage($);
-				if (nextPage === undefined) {
-					report("No more �ץ쥤�ǩ`�� pages");
-				}
-				const pdEntries = MyList.getPlayDataEntries($);
 				let noMorePM = false;
+				const nextPage = MyList.getNextPage($);
+
+				if (nextPage === undefined) {
+					log("No more プレイデータ pages");
+				}
+
+				const pdEntries = MyList.getPlayDataEntries($);
 				const checkPDEntry = (pdEntry) => {
-					if (isPassed(maxInfos) || noMorePM || !isPM(pdEntry)) {
-						if (!noMorePM && isNoMorePM(pdEntry)) {
-							noMorePM = true;
-							report("No more PM songs");
-						}
-						// report("Skip " + pdEntry.toString());
+
+					if (isPassed(maxInfos) || noMorePM) {
 						return Promise.resolve();
 					}
-					report("Check " + pdEntry.toString());
+					if (isPM(pdEntry) === false) {
+						if (noMorePM === false && isNoMorePM(pdEntry)) {
+							noMorePM = true;
+							log(`No more PM songs: ${pdEntry}`);
+							return Promise.resolve();
+						}
+					}
+
+					log("Check " + pdEntry.toString());
 					return this.checkSongRanking(pdEntry.bmsid, "1")
 						.then((maxInfo) => {
 							if (maxInfo === undefined) return;
 							maxInfos.push(maxInfo);
-							report(maxInfo.score + " -> MAX: " + maxInfos.length + "\n");
+							log(maxInfo.score + " -> MAX: " + maxInfos.length + "\n");
 						})
 						.then(() => wait(WAIT.REQUEST))
-						.catch((err) => Promise.reject(err));
+						.catch(Promise.reject);
 				};
+
 				return Promise
 					.each(pdEntries, checkPDEntry)
 					.then(() => [maxInfos, nextPage, noMorePM])
-					.catch((err) => Promise.reject(err));
+					.catch(Promise.reject);
 			})
-			.catch((err) => Promise.reject(err));
-			// .finally(() => report(maxInfos));
+			.catch(Promise.reject);
 	};
 
 	this.checkSongRanking = function(bmsid, page) {
 		return bluebird()
-			.then(( ) => retryOpenSongRanking(bmsid, page))
+			.then(() => retryOpenSongRanking(bmsid, page))
 			.then(($) => {
 				let maxInfo;
 				const rEntries = SongRanking.getRankingEntries($);
@@ -130,7 +135,7 @@ const MaxCountChecker = function(lr2id, goal, report) {
 				}
 				return maxInfo;
 			})
-			.catch((err) => Promise.reject(err));
+			.catch(Promise.reject);
 	};
 };
 
