@@ -23,5 +23,8 @@ module.exports.setUp = function({app, io}) {
 		socket.on(
 			MESSAGE.RIVAL_REQUEST,
 			(lr2id) => sh.on(MESSAGE.RIVAL_REQUEST)(lr2id, socket));
+		socket.on(
+			MESSAGE.CANCEL_RIVAL_REQUEST,
+			(lr2id) => sh.on(MESSAGE.CANCEL_RIVAL_REQUEST)(lr2id, socket));
 	});
 };

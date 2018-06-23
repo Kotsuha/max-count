@@ -7,6 +7,7 @@ const PATH = {
 const MESSAGE = {
 	LOG: "log",
 	RIVAL_REQUEST: "rival-request",
+	CANCEL_RIVAL_REQUEST: "cancel-rival-request",
 };
 
 module.exports = {
