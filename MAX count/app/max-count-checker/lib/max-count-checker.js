@@ -18,7 +18,7 @@ const wait = require("app/wait").dottedWait;
 
 const WAIT = {
 	REQUEST: 3000,
-	RETRY: 30000,
+	RETRY: 15000,
 };
 const OOPS = 3;
 
