@@ -13,8 +13,8 @@ const {
 
 
 let io;
-const init = function(newIo) {
-	io = newIo;
+const setIO = function(newIO) {
+	io = newIO;
 };
 
 const MSG = {
@@ -68,7 +68,7 @@ const ON = {
 };
 
 module.exports = {
-	init,
+	setIO,
 	get: (path) => GET[path],
 	post: (path) => POST[path],
 	on: (message) => ON[message],

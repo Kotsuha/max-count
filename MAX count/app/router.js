@@ -18,7 +18,7 @@ module.exports.setUp = function({app, io}) {
 		PATH.ECHO,
 		(req, res) => sh.post(PATH.ECHO)(req, res));
 
-	sh.init(io);
+	sh.setIO(io);
 	io.on(MESSAGE.CONNECTION, function(socket) {
 		sh.on(MESSAGE.CONNECTION)(socket);
 		// socket.on(MESSAGE.DISCONNECT, function() {});
