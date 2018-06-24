@@ -9,4 +9,4 @@ __global.__approot = __dirname;
 __global.args = process.argv.slice(2);
 __global.foon = foon;
 
-require("./main-logic");
+require("./main");
