@@ -1,6 +1,6 @@
 "use strict";
 
-const { __approot, foon } = require("../common");
+const { __approot, foon } = require("app/__global");
 const { GOAL } = require(__approot + "/config/config");
 const MaxCountChecker = require(__approot + "/max-count-checker");
 const lr2ir = require("app/lr2ir");

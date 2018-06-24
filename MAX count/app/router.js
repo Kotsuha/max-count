@@ -1,6 +1,6 @@
 "use strict";
 
-const { __approot } = require("app/common");
+const { __approot } = require("app/__global");
 const { PATH, MESSAGE } = require(__approot + "/config/routes");
 const sh = require(__approot + "/service-handler");
 
