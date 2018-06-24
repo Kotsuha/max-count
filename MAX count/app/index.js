@@ -4,7 +4,7 @@ const foon = require("app/logger");
 foon.setPrefixToFoon();
 foon.log("Start");
 
-const common = require("./common");
+const common = require("app/common");
 common.__approot = __dirname;
 common.args = process.argv.slice(2);
 common.foon = foon;

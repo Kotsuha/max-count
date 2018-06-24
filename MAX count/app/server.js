@@ -1,6 +1,6 @@
 "use strict";
 
-const { __approot, foon } = require("./common");
+const { __approot, foon } = require("app/common");
 const CONFIG = require(__approot + "/config/config");
 const router = require(__approot + "/router");
 

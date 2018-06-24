@@ -1,6 +1,6 @@
 "use strict";
 
-const { __approot, args, foon } = require("./common");
+const { __approot, args, foon } = require("app/common");
 const lr2ir = require("app/lr2ir");
 const server = require(__approot + "/server");
 
