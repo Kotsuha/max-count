@@ -1,4 +1,5 @@
 syntax: glob
-MAX count.sublime-workspace
-MAX count/node_modules/
-MAX count/app/foo/
+*.sublime-workspace
+
+syntax: regexp
+^node_modules/
