@@ -18,6 +18,6 @@ module.exports.run = function() {
 	router.setUp({app, io});
 
 	server.listen(CONFIG.PORT, function() {
-		foon.log(`http://localhost:${CONFIG.PORT}`);
+		foon.log(`Listening on ${CONFIG.PORT}`);
 	});
 };
