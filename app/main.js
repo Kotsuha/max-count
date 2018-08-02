@@ -16,7 +16,22 @@ function loginOrNot() {
 		: Promise.resolve();
 }
 
+// heroku-waker
+function wakeHerokuOrNot() {
+	const url = CONFIG.APP_URL;
+	const interval = CONFIG.WAKE_INTERVAL;
+	if (url && interval) {
+		const waker = require("app/heroku-waker");
+		waker.setUrl(url).setInterval(interval);
+		const users = require(__approot + "/users");
+		users.onUsersBecomeGreaterThanZero.add(waker.start);
+		users.onUsersBecomeZero.add(waker.stop);
+		foon.log("Will try to keep heroku awake", url, interval);
+	}
+}
+
 loginOrNot()
-	.then(() => { 
+	.then(() => {
+		wakeHerokuOrNot();
 		server.run();
 	});
