@@ -3,32 +3,8 @@
 const { __approot } = require("app/__global");
 const { PATH, MESSAGE } = require(__approot + "/config/routes");
 const { MAX_USERS } = require(__approot + "/config/config");
+const users = require(__approot + "/users");
 
-const users = (function() {
-	let current = 0;
-	// const isMaxReached = () => current >= MAX_USERS;
-	const change = function(num) {
-		const newUsers = current + num;
-		if (newUsers > MAX_USERS || newUsers < 0) {
-			return false;
-		}
-		current = newUsers;
-		onUsersChange(current);
-		return true;
-	};
-	const createEvent = require("app/event");
-	const onUsersChange = createEvent();
-	const increase = () => change(+1);
-	const decrease = () => change(-1);
-	const toString = () => `${current}/${MAX_USERS}`;
-	return {
-		// isMaxReached,
-		increase,
-		decrease,
-		onUsersChange,
-		toString,
-	};
-}());
 
 let io;
 const setIO = function(newIO) {
