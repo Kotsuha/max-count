@@ -24,7 +24,7 @@ function wakeHerokuOrNot() {
 		const waker = require("app/heroku-waker");
 		waker.setUrl(url)
 			 .setInterval(interval)
-			 .setLog(foon.log);
+			 .setLogger(foon.log);
 		const users = require(__approot + "/users");
 		users.onUsersBecomeGreaterThanZero.add(waker.start);
 		users.onUsersBecomeZero.add(waker.stop);
