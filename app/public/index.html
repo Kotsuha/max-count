@@ -2,66 +2,28 @@
 <html>
 <head>
 	<meta charset="UTF-8">
-	<title></title>
-	<script src="/jquery-3.3.1.min.js"></script>
-	<script src="/socket.io/socket.io.js"></script>
-	<script>
-		/* eslint-disable */
-		$(function() {
-			const socket = io();
-			
-			const $form = $("#form");
-			const $cancel = $("#cancel");
-			const $logger = $("#logger");
-			const logger = $logger[0];
-			const $scroll = $("#scroll");
-			const $descButton = $("#desc-button");
-			const $desc = $("#desc");
+	<title>(^^)</title>
 
-			$form.submit(function() {
-				const lr2id = $("#lr2id").val();
-				socket.emit("rival-request", lr2id);
-				return false;
-			});
-			$cancel.click(function() {
-				const lr2id = $("#lr2id").val();
-				socket.emit("cancel-rival-request", lr2id);
-			});
+	<!-- normalize.css -->
+	<link rel="stylesheet" href="css/normalize.css">
 
-			socket.on("log", function(data) {
-				console.log(data);
-				logger.value += (data + "\n");
-				if ($scroll.prop("checked")) {
-					$logger.scrollTop(logger.scrollHeight - $logger.height());
-				}
-			});
-
-			socket.on("users", function(data) {
-				updateTitle(data);
-			});
-
-			const updateTitle = function(users) {
-				let title = "(^^)";
-				if (users) title += " " + users;
-				document.title = title;
-			};
-
-			const $clear = $("#clear");
-			$clear.click(function() {
-				logger.value = "";
-			});
-
-			$desc.hide();
-			$descButton.click(function() {
-				if ($desc.is(":hidden")) {
-					$desc.slideDown();
-				} else {
-					$desc.slideUp();
-				}
-			});
-		});
-	</script>
 	<style>
+		/* Test */
+		.test-bg {
+			background: rgba(255, 0, 255, 0.1);
+		}
+
+
+		/* Visual & Stuff */
+		#console {
+			background: black;
+			color: silver;
+
+			width: 100%;
+			height: 100%;
+			box-sizing: border-box;
+			border: 0;
+		}
 		code {
 			font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace;
 			font-size: 12px;
@@ -72,47 +34,154 @@
 			background-color: rgba(27,31,35,.05);
 			border-radius: 3px;
 		}
+		.copyleft {
+			display:inline-block;
+			transform: rotateY(180deg);
+		}
 
-		#logger {
-			background: black;
-			color: silver;
+
+		/* Layout */
+		#page {
+			display: flex;
+			flex-direction: row;
+
+			position: absolute;
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 100%;
+		}
+		#main {
+			position: relative;
+			overflow-y: auto;
+			padding: 8px;
+		}
+		#main > section {
+			padding: 12px 0;
+		}
+		footer {
+			position: absolute;
+			bottom: 0;
+		}
+
+
+		/* 模仿 IR */
+		body {
+			/*background: #000;*/
+			/*color: #EEF;*/
+			font-size: 10pt;
 		}
 	</style>
 </head>
 <body>
-	<div>
-		<form action="" id="form">
-			<label for="lr2id">LR2ID</label>
-			<input type="number" id="lr2id">
-			<input type="submit">
-			<input type="button" id="cancel" value="Cancel">
-		</form>
-	</div>
-	<div>
-		<textarea id="logger" cols="80" rows="10" readonly></textarea>
-	</div>
-	<div>
-		<button id="clear">Clear</button>
-		<input type="checkbox" id="scroll" checked><label for="scroll">Scroll</label>
-	</div>
-	<br>
-	<div id="desc-container">
-		<button id="desc-button">How to use 使い方</button>
-		<div id="desc">
-			<p>How to use:<br>使い方:</p>
-			<p>Enter your LR2ID and hit the submit button. The checking should start. It will take a fairly long time, so just leave it. Do not close or refresh the tab if you would like to view the logs or be able to cancel the request. After the checking is done, it should rival you if enough max records are found.<br>LR2IDを入力し、送信ボタンを押してください。チェックが開始されます。かなり長い時間がかかりますので、そのままにしておいてください。ログを表示したり、リクエストをキャンセルしたりする場合は、タブを閉じたり更新したりしないでください。チェックが完了した後、十分なMAXが見つかると、そのIDをライバルに追加するはずです。</p>
-			<p>Please notice that:<br>注意:</p>
-			<ul>
-				<li>Only a limited number of users can use at the same time. Please refer to the tab title.<br>限られた数のユーザーしか同時に使用することはできません。タブのタイトルを参照してください。</li>
-				<li>Please enter the ID shown in the url. For example if your ID is 1, please enter <code>1</code> rather than <code>000001</code>.<br>URLに表示されているIDを入力してください。 たとえば、IDが1の場合は、<code>000001</code>ではなく<code>1</code>を入力してください。</li>
-				<li>You can only cancel requests that are sent from the same tab. You cannot cancel a request after you close or refresh the tab.<br>同じタブから送信されたリクエストのみを取り消すことができます。 タブを閉じるか、または更新した後、リクエストを取り消すことはできません。</li>
-				<li>Current UI is crappy I know :( Hopefully it will be improved in the future.<br>今のUIは悪い(；ω；)﻿わかります。</li>
-			</ul>
+	<div id="page">
+		<div id="main">
+			<header>
+				<h1>max count</h1>
+			</header>
+			
+			<section>
+				<form action="" id="form">
+					<label for="lr2id">LR2ID</label>
+					<input type="number">
+					<input type="submit">
+					<input type="button" value="Cancel">
+				</form>
+			</section>
+
+			<section id="inst-section">
+				<button id="inst-btn">How to use 使い方</button>
+				<div id="inst" style="display: none;">
+					<p>How to use:<br>使い方:</p>
+					<p>Enter your LR2ID and hit the submit button. The checking should start. It will take a fairly long time, so just leave it. Do not close or refresh the tab if you would like to view the logs or be able to cancel the request. After the checking is done, it should rival you if enough max records are found.<br>LR2IDを入力し、送信ボタンを押してください。チェックが開始されます。かなり長い時間がかかりますので、そのままにしておいてください。ログを表示したり、リクエストをキャンセルしたりする場合は、タブを閉じたり更新したりしないでください。チェックが完了した後、十分なMAXが見つかると、そのIDをライバルに追加するはずです。</p>
+					<p>Please notice that:<br>注意:</p>
+					<ul>
+						<li>Only a limited number of users can use at the same time. Please refer to the tab title.<br>限られた数のユーザーしか同時に使用することはできません。タブのタイトルを参照してください。</li>
+						<li>Please enter the ID shown in the url. For example if your ID is 1, please enter <code>1</code> rather than <code>000001</code>.<br>URLに表示されているIDを入力してください。 たとえば、IDが1の場合は、<code>000001</code>ではなく<code>1</code>を入力してください。</li>
+						<li>You can only cancel requests that are sent from the same tab. You cannot cancel a request after you close or refresh the tab.<br>同じタブから送信されたリクエストのみを取り消すことができます。 タブを閉じるか、または更新した後、リクエストを取り消すことはできません。</li>
+						<li>Current UI is crappy I know :( Hopefully it will be improved in the future.<br>今のUIは悪い(；ω；)﻿わかります。</li>
+					</ul>
+				</div>
+			</section>
+
+			<section>
+				<a href="http://www.dream-pro.info/~lavalse/LR2IR/search.cgi" target="_blank">Go to LR2IR</a>
+			</section>
+
+			<footer><span class="copyleft">&copy;</span> 2018 Kotsuha</footer>
+		</div>
+
+		<div id="sub">
+			<textarea id="console" name="" cols="30" rows="10"></textarea>
 		</div>
 	</div>
-	<br>
-	<div>
-		<a href="http://www.dream-pro.info/~lavalse/LR2IR/search.cgi" target="_blank">Go to LR2IR</a>
-	</div>
+
+
+	<!-- jQuery 系列 -->
+	<script src="js/jquery-3.3.1.min.js"></script>
+
+	<!-- Split.js -->
+	<style>
+		.gutter {
+		  background-color: #eee;
+		  background-repeat: no-repeat;
+		  background-position: 50%;
+		}
+
+		.gutter.gutter-vertical {
+			background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAFAQMAAABo7865AAAABlBMVEVHcEzMzMzyAv2sAAAAAXRSTlMAQObYZgAAABBJREFUeF5jOAMEEAIEEFwAn3kMwcB6I2AAAAAASUVORK5CYII=");
+			cursor: ns-resize;
+		}
+
+		.gutter.gutter-horizontal {
+			background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAeCAYAAADkftS9AAAAIklEQVQoU2M4c+bMfxAGAgYYmwGrIIiDjrELjpo5aiZeMwF+yNnOs5KSvgAAAABJRU5ErkJggg==");
+			cursor: ew-resize;
+		}
+
+		.split {
+		  -webkit-box-sizing: border-box;
+		     -moz-box-sizing: border-box;
+		          box-sizing: border-box;
+		}
+	</style>
+	<script src="https://unpkg.com/split.js/split.min.js"></script>
+
+	<script>
+		(function() {
+			var split = Split(["#main", "#sub"]);
+			var page = document.getElementById("page");
+			function splitHorizontal() {
+				page.style.flexDirection = "row";
+				split.destroy();
+				split = Split(["#main", "#sub"], {
+					direction: "horizontal"
+				});
+			}
+			function splitVertical() {
+				page.style.flexDirection = "column";
+				split.destroy();
+				split = Split(["#main", "#sub"], {
+					direction: "vertical"
+				});
+			}
+
+			var pageComputedStyle = window.getComputedStyle(page);
+			window.addEventListener("resize", function() {
+				var width = document.documentElement.clientWidth;
+				var height = document.documentElement.clientHeight;
+
+				if (width > height && pageComputedStyle.flexDirection == "column") {
+					splitHorizontal();
+				}
+				else if (width < height && pageComputedStyle.flexDirection == "row") {
+					splitVertical();
+				}
+			});
+
+			$("#inst-btn").click(function() {
+				$("#inst").slideToggle();
+			});
+		})();
+	</script>
 </body>
 </html>
