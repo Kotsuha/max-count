@@ -1,0 +1,43 @@
+<?xml version="1.0" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd" >
+<!--
+2018-8-18: Created.
+-->
+<svg xmlns="http://www.w3.org/2000/svg">
+<metadata>
+Created by FontForge 20120731 at Sat Aug 18 07:25:53 2018
+ By icons8
+
+</metadata>
+<defs>
+<font id="max-count" horiz-adv-x="512" >
+  <font-face 
+    font-family="max-count"
+    font-weight="500"
+    font-stretch="normal"
+    units-per-em="512"
+    panose-1="2 0 6 3 0 0 0 0 0 0"
+    ascent="448"
+    descent="-64"
+    bbox="32 0 448 384"
+    underline-thickness="25.6"
+    underline-position="-51.2"
+    unicode-range="U+0020-F104"
+  />
+    <missing-glyph />
+    <glyph glyph-name="space" unicode=" " horiz-adv-x="200" 
+ />
+    <glyph glyph-name="right-docking" unicode="&#xf103;" 
+d="M208 384h192c26.375 0 48 -21.625 48 -48v-336h-288v336c0 26.375 21.625 48 48 48zM208 352c-9 0 -16 -7 -16 -16v-16h224v16c0 9 -7 16 -16 16h-192zM192 288v-256h224v256h-224zM32 256l80 -80l-80 -80v160z" />
+    <glyph glyph-name="clear-bin" unicode="&#xf102;" 
+d="M112 384h288c26.375 0 48 -21.625 48 -48v-16h-6.625c-5.25 -13 -14.375 -24 -26.75 -29l-27.625 -248.25v-0.125c-2.625 -24.125 -23.375 -42.625 -47.625 -42.625h-166.75c-24.25 0 -45 18.5 -47.625 42.625l-27.625 248.375c-12.375 5 -21.5 16 -26.625 29h-6.75v16
+c0 26.375 21.625 48 48 48zM112 352c-9 0 -16 -7 -16 -16s7 -16 16 -16h288c9 0 16 7 16 16s-7 16 -16 16h-288zM129.875 288l26.875 -241.75c0.875 -8.25 7.625 -14.25 15.875 -14.25h166.75c8.25 0 15 6 15.875 14.25l26.875 241.75h-252.25z" />
+    <glyph glyph-name="checked-checkbox" unicode="&#xf101;" 
+d="M112 384h288c26.375 0 48 -21.625 48 -48v-288c0 -26.375 -21.625 -48 -48 -48h-288c-26.375 0 -48 21.625 -48 48v288c0 26.375 21.625 48 48 48zM112 352c-9 0 -16 -7 -16 -16v-288c0 -9 7 -16 16 -16h288c9 0 16 7 16 16v288c0 9 -7 16 -16 16h-288zM360.625 287.25
+l22.75 -22.5l-159.375 -159.375l-95.25 95.375l22.5 22.5l72.75 -72.625z" />
+    <glyph glyph-name="unchecked-checkbox" unicode="&#xf104;" 
+d="M112 384h288c26.375 0 48 -21.625 48 -48v-288c0 -26.375 -21.625 -48 -48 -48h-288c-26.375 0 -48 21.625 -48 48v288c0 26.375 21.625 48 48 48zM112 352c-9 0 -16 -7 -16 -16v-288c0 -9 7 -16 16 -16h288c9 0 16 7 16 16v288c0 9 -7 16 -16 16h-288z" />
+    <glyph glyph-name="bottom-docking" unicode="&#xf100;" 
+d="M160 384h160l-80 -80zM80 256h320c26.375 0 48 -21.625 48 -48v-208h-416v208c0 26.375 21.625 48 48 48zM80 224c-9 0 -16 -7 -16 -16v-16h352v16c0 9 -7 16 -16 16h-320zM64 160v-128h352v128h-352z" />
+  </font>
+</defs></svg>
