@@ -15,6 +15,7 @@
 		{
 			"autoCompile": false,
 			// "minify": true
+			"outputDir": "auto"
 		}
 	}
 }
