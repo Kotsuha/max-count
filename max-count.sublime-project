@@ -2,7 +2,11 @@
 	"folders":
 	[
 		{
-			"path": "./app"
+			"path": ".",
+			"folder_include_patterns": [
+				"app",
+				"app/*"
+			]
 		}
 	]
 }
