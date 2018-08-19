@@ -59,12 +59,27 @@
 			border: 0;
 
 			font-family: monospace;
+			line-height: normal;
 		}
 		#c0nsole-toolbar {
-			position: absolute;
-			bottom: 0;
 			color: silver;
 			padding: 2px 3px;
+
+			position: absolute;
+			bottom: 0;
+			margin-left: 2px;
+			margin-bottom: 2px;
+			background: rgba(0, 0, 0, 0.7);
+			border: solid silver thin;
+			border-radius: 1px;
+
+			opacity: 0;
+			-webkit-transition: opacity 0.4s;
+			-o-transition: opacity 0.4s;
+			transition: opacity 0.4s;
+		}
+		#sub:hover #c0nsole-toolbar {
+			opacity: 1;
 		}
 		#c0nsole-toolbar a,
 		#c0nsole-toolbar label {
@@ -172,9 +187,9 @@
 			<textarea id="c0nsole" cols="80" rows="10" readonly></textarea>
 			<div id="c0nsole-toolbar">
 				<ul class="list-btns">
-					<li><a id="layout-btn" href="javascript:;"><i class="icons8-bottom-docking"></i></a></li>
-					<li><a id="clear-btn" href="javascript:;"><i class="icons8-clear-bin"></i></a></li>
-					<li><label><input id="scroll-cb" type="checkbox" checked class="icons8-checkbox"><i class="icons8-checkbox"></i> Autoscroll with output</label></li>
+					<li><a id="layout-btn" href="javascript:;" title="Dock to right/bottom"><i class="icons8-bottom-docking"></i></a></li>
+					<li><a id="clear-btn" href="javascript:;" title="Clear logs"><i class="icons8-clear-bin"></i></a></li>
+					<li><label title="Toggle autoscrolling"><input id="scroll-cb" type="checkbox" checked class="icons8-checkbox"><i class="icons8-checkbox"></i> Autoscroll with output</label></li>
 				</ul>
 			</div>
 		</div>
