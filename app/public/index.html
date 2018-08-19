@@ -49,7 +49,7 @@
 
 
 		/* Page Specific - Visual or Component */
-		#console {
+		#c0nsole {
 			background: black;
 			color: silver;
 
@@ -57,25 +57,27 @@
 			height: 100%;
 			box-sizing: border-box;
 			border: 0;
+
+			font-family: monospace;
 		}
-		#console-btns {
+		#c0nsole-toolbar {
 			position: absolute;
 			bottom: 0;
 			color: silver;
 			padding: 2px 3px;
 		}
-		#console-btns a,
-		#console-btns label {
+		#c0nsole-toolbar a,
+		#c0nsole-toolbar label {
 			color: silver;
 			padding: 2px 3px;
 		}
-		#console-btns a:hover,
-		#console-btns label:hover {
+		#c0nsole-toolbar a:hover,
+		#c0nsole-toolbar label:hover {
 			color: white;
 			background: rgba(255, 255, 255, 0.2);
 			border-radius: 3px;
 		}
-		#console-btns a:active {
+		#c0nsole-toolbar a:active {
 			background: rgba(255, 255, 255, 0.3);
 
 			/* Doesn't work in Firefox. Will make this whole {} rule not working. */
@@ -134,17 +136,16 @@
 			
 			<div class="section-container">
 				<section>
-					<form action="" id="form">
-						<label for="lr2id">LR2ID</label>
-						<input type="number">
-						<input type="submit">
-						<input type="button" value="Cancel">
+					<form id="form" action="">
+						<label for="lr2id-field">LR2ID <input id="lr2id-field" type="number"></label>
+						<input id="submit-btn" type="submit">
+						<input id="cancel-btn" type="button" value="Cancel">
 					</form>
 				</section>
 
 				<section>
-					<button id="inst-btn">How to use 使い方</button>
-					<div id="inst" hidden>
+					<button id="instruction-btn">How to use 使い方</button>
+					<div id="instruction" hidden>
 						<p>How to use:<br>使い方:</p>
 						<p>Enter your LR2ID and hit the submit button. The checking should start. It will take a fairly long time, so just leave it. Do not close or refresh the tab if you would like to view the logs or be able to cancel the request. After the checking is done, it should rival you if enough max records are found.<br>LR2IDを入力し、送信ボタンを押してください。チェックが開始されます。かなり長い時間がかかりますので、そのままにしておいてください。ログを表示したり、リクエストをキャンセルしたりする場合は、タブを閉じたり更新したりしないでください。チェックが完了した後、十分なMAXが見つかると、そのIDをライバルに追加するはずです。</p>
 						<p>Please notice that:<br>注意:</p>
@@ -168,12 +169,12 @@
 		</div>
 
 		<div id="sub">
-			<textarea id="console" name="" cols="30" rows="10"></textarea>
-			<div id="console-btns">
+			<textarea id="c0nsole" cols="80" rows="10" readonly></textarea>
+			<div id="c0nsole-toolbar">
 				<ul class="list-btns">
 					<li><a id="layout-btn" href="javascript:;"><i class="icons8-bottom-docking"></i></a></li>
-					<li><a href="javascript:;"><i class="icons8-clear-bin"></i></a></li>
-					<li><label><input type="checkbox" checked class="icons8-checkbox"><i class="icons8-checkbox"></i> Autoscroll with output</label></li>
+					<li><a id="clear-btn" href="javascript:;"><i class="icons8-clear-bin"></i></a></li>
+					<li><label><input id="scroll-cb" type="checkbox" checked class="icons8-checkbox"><i class="icons8-checkbox"></i> Autoscroll with output</label></li>
 				</ul>
 			</div>
 		</div>
@@ -212,8 +213,10 @@
 	<script>
 		(function() {
 			// 雜
-			$("#inst-btn").click(function() {
-				$("#inst").slideToggle();
+			var $instructionBtn = $("#instruction-btn");
+			var $instruction = $("#instruction");
+			$instructionBtn.click(function() {
+				$instruction.slideToggle();
 			});
 
 			// Split.js & Layout 相關
@@ -300,7 +303,61 @@
 
 			layout();
 			// window.addEventListener("resize", layoutIfNeeded);
-			layoutBtn.addEventListener("click", toggleLayout); 
+			layoutBtn.addEventListener("click", toggleLayout);
+
+
+			// c0nsole toolbar 其他有獨立作用的按鈕
+			var c0nsole = document.getElementById("c0nsole");
+			var clearBtn = document.getElementById("clear-btn");
+			clearBtn.addEventListener("click", function() {
+				c0nsole.value = "";
+			});
+		})();
+	</script>
+
+	<!-- max-count 本體相關 -->
+	<script src="/socket.io/socket.io.js"></script>
+	<script>
+		/* eslint-disable */
+		(function() {
+			const socket = io();
+
+			const $form = $("#form");
+			const $lr2idField = $("#lr2id-field");
+			const $cancel = $("#cancel-btn");
+
+			$form.submit(function() {
+				const lr2id = $lr2idField.val();
+				socket.emit("rival-request", lr2id);
+				return false;
+			});
+
+			$cancel.click(function() {
+				const lr2id = $lr2idField.val();
+				socket.emit("cancel-rival-request", lr2id);
+			});
+
+			const $c0nsole = $("#c0nsole"), c0nsole = $c0nsole[0];
+			const $scrollCb = $("#scroll-cb");
+
+			socket.on("log", function(data) {
+				// console.log(data);
+				c0nsole.value += (data + "\n");
+				if ($scrollCb.prop("checked")) {
+					$c0nsole.scrollTop(c0nsole.scrollHeight - $c0nsole.height());
+				}
+			});
+
+			const initialTitle = document.title;
+			const updateTitle = function(users) {
+				let newTitle = initialTitle;
+				if (users) newTitle += " " + users;
+				document.title = newTitle;
+			};
+
+			socket.on("users", function(data) {
+				updateTitle(data);
+			});
 		})();
 	</script>
 </body>
