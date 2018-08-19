@@ -2,12 +2,14 @@
 // -------------------------
 
 
+.icons8, // 原 icons8 給的 css 有這個，但 less 不知為何沒有 (scss 也沒有)，因此加一下
 [data-icons8]:before,
 .icons8-bottom-docking:before,
 .icons8-checked-checkbox:before,
 .icons8-clear-bin:before,
 .icons8-right-docking:before,
 .icons8-unchecked-checkbox:before,
+.icons8-checkbox:before, // 自加
 { .icons8-font(); }
 
 [data-icons8]:before { content: attr(data-icons8); }
@@ -17,4 +19,7 @@
 .icons8-clear-bin:before { content: "@{icons8-var-clear-bin}"; }
 .icons8-right-docking:before { content: "@{icons8-var-right-docking}"; }
 .icons8-unchecked-checkbox:before { content: "@{icons8-var-unchecked-checkbox}"; }
+input[type=checkbox].icons8-checkbox { display: none; } // 自加
+input[type=checkbox].icons8-checkbox ~ .icons8-checkbox::before { content: "@{icons8-var-unchecked-checkbox}"; } // 自加
+input[type=checkbox].icons8-checkbox:checked ~ .icons8-checkbox::before { content: "@{icons8-var-checked-checkbox}"; } // 自加
 
