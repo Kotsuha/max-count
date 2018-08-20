@@ -80,13 +80,14 @@
 			-o-transition: opacity 0.4s;
 			transition: opacity 0.4s;
 		}
-		#sub:hover #c0nsole-toolbar {
+		#sub:hover #c0nsole-toolbar,
+		#c0nsole:focus + #c0nsole-toolbar {
 			opacity: 1;
 		}
 		#c0nsole-toolbar a,
 		#c0nsole-toolbar label {
 			color: silver;
-			padding: 2px 3px;
+			padding: 5px;
 		}
 		#c0nsole-toolbar a:hover,
 		#c0nsole-toolbar label:hover {
@@ -94,7 +95,8 @@
 			background: rgba(255, 255, 255, 0.2);
 			border-radius: 3px;
 		}
-		#c0nsole-toolbar a:active {
+		#c0nsole-toolbar a:active,
+		#c0nsole-toolbar label:active {
 			background: rgba(255, 255, 255, 0.3);
 
 			/* Doesn't work in Firefox. Will make this whole {} rule not working. */
@@ -140,7 +142,7 @@
 		#main {
 			/*background: #000;
 			color: #EEF;*/
-			font-size: 10pt;
+			/*font-size: 10pt;*/
 		}
 	</style>
 </head>
@@ -181,7 +183,7 @@
 			</div>
 
 			<div id="footer-container">
-				<footer><span class="copyleft">&copy;</span> 2018 Kotsuha | <a href="https://icons8.com" target="_blank">Icon pack by Icons8</a></footer>
+				<footer><small><span class="copyleft">&copy;</span> 2018 Kotsuha | <a href="https://icons8.com" target="_blank">Icon pack by Icons8</a></small></footer>
 			</div>
 		</div>
 
@@ -337,6 +339,11 @@
 	<script>
 		/* eslint-disable */
 		(function() {
+
+			if (typeof io === "undefined") { // https://stackoverflow.com/questions/5113374/javascript-check-if-variable-exists-is-defined-initialized
+				return;
+			}
+
 			const socket = io();
 
 			const $form = $("#form");
