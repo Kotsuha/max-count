@@ -16,10 +16,11 @@
 	<!-- 自己的 -->
 	<link rel="stylesheet" href="css/styles.min.css"></link>
 </head>
+
 <!-- lang="ja" 只是為了讓渲染使用日文字體 -->
 <body lang="ja">
 	<div id="page">
-		<div id="main" class="test-bg">
+		<div id="main">
 			<header>
 				<h1>max count</h1>
 			</header>
@@ -91,7 +92,7 @@
 				</footer>
 			</div>
 		</div>
-		<div id="sub" class="test-bg">
+		<div id="sub">
 			<div id="c0nsole-container">
 				<textarea cols="80" rows="10" readonly id="c0nsole">(^^) Hello World</textarea>
 				<div id="c0nsole-toolbar">
@@ -179,7 +180,9 @@
 				page.style.flexDirection = "row";
 				if (splitInstance) splitInstance.destroy();
 				splitInstance = Split(["#main", "#sub"], {
-					direction: "horizontal"
+					direction: "horizontal",
+					sizes: [60, 40],
+					minSize: 50
 				});
 				currentLayout = Layout.Horizontal;
 
@@ -190,7 +193,9 @@
 				page.style.flexDirection = "column";
 				if (splitInstance) splitInstance.destroy();
 				splitInstance = Split(["#main", "#sub"], {
-					direction: "vertical"
+					direction: "vertical",
+					sizes: [60, 40],
+					minSize: 50
 				});
 				currentLayout = Layout.Vertical;
 
