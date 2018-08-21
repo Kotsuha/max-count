@@ -14,7 +14,8 @@
 		"less2css":
 		{
 			"autoCompile": false,
-			// "minify": true
+			// "minify": true,
+			"minName": true,
 			"outputDir": "auto"
 		}
 	}
