@@ -94,7 +94,7 @@
 				<div><br></div>
 
 				<footer>
-					<small><span class="copyleft">&copy;</span> 2018 Kotsuha | <a href="https://github.com/Kotsuha/max-count" target="_blank">GitHub</a> | <a href="https://icons8.com" target="_blank">Icon pack by Icons8</a></small>
+					<small><span class="copyleft">&copy;</span> 2018 Kotsuha | <a id="fs-btn" href="javascript:;" title="Fullscreen"><i class="icons8-full-screen"></i></a> | <a href="https://github.com/Kotsuha/max-count" target="_blank">GitHub</a> | <a href="https://icons8.com" target="_blank">Icon pack by Icons8</a></small>
 				</footer>
 			</div>
 		</div>
@@ -111,7 +111,7 @@
 			</div>
 		</div>
 	</div>
- 
+
 	<!-- jQuery CDN -->
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 	<!-- jQuery local fallback -->
@@ -250,6 +250,19 @@
 				c0nsole.value = "";
 			});
 		})();
+	</script>
+
+	<!-- screenfull.js -->
+	<script src="js/screenfull.min.js"></script>
+	<script>
+		var fsBtn = document.getElementById("fs-btn");
+		fsBtn.addEventListener("click", function() {
+			if (screenfull.enabled) {
+				screenfull.request();
+			} else {
+				// Ignore or do something else
+			}
+		});
 	</script>
 
 	<!-- max-count 本體相關 -->
