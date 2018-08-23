@@ -19,6 +19,19 @@
 
 <!-- lang="ja" 只是為了讓渲染使用日文字體 -->
 <body lang="ja">
+
+	<!-- Loading Screen -->
+	<div class="loading-screen">
+		<div class="spinner">
+		  <div class="rect1"></div>
+		  <div class="rect2"></div>
+		  <div class="rect3"></div>
+		  <div class="rect4"></div>
+		  <div class="rect5"></div>
+		</div>
+	</div>
+
+	<!-- The page -->
 	<div id="page">
 		<div id="main">
 			<header>
@@ -187,7 +200,6 @@
 				if (splitInstance) splitInstance.destroy();
 				splitInstance = Split(["#main", "#sub"], {
 					direction: "horizontal",
-					sizes: [60, 40],
 					minSize: 50
 				});
 				currentLayout = Layout.Horizontal;
@@ -200,7 +212,6 @@
 				if (splitInstance) splitInstance.destroy();
 				splitInstance = Split(["#main", "#sub"], {
 					direction: "vertical",
-					sizes: [60, 40],
 					minSize: 50
 				});
 				currentLayout = Layout.Vertical;
@@ -314,6 +325,13 @@
 				updateTitle(data);
 			});
 		})();
+	</script>
+
+	<script>
+		$(window).on("load", function() {
+			// https://stackoverflow.com/questions/4584373/difference-between-window-load-and-document-ready-functions
+			$(".loading-screen").fadeOut(1000);
+		});
 	</script>
 </body>
 </html>
