@@ -130,6 +130,26 @@
 	<!-- jQuery local fallback -->
 	<script>window.jQuery || document.write("<script src='js/jquery-3.3.1.min.js'><\/script>");</script>
 
+	<script>
+		// 雜 (比較單純、依賴關係比較少的東西擺這邊)
+		(function() {
+			var $instructionBtn = $("#instruction-btn");
+			var $instruction = $("#instruction");
+			$instructionBtn.on("click", function() {
+				$instruction.animate({
+					opacity: "toggle",
+					height: "toggle"
+				});
+			});
+
+			var c0nsole = document.getElementById("c0nsole");
+			var clearBtn = document.getElementById("clear-btn");
+			clearBtn.addEventListener("click", function() {
+				c0nsole.value = "";
+			});
+		})();
+	</script>
+
 	<!-- Split.js -->
 	<style>
 		.gutter {
@@ -157,15 +177,8 @@
 	<script src="js/split.min.js"></script>
 
 	<script>
+		// Split.js & Layout 相關
 		(function() {
-			// 雜
-			var $instructionBtn = $("#instruction-btn");
-			var $instruction = $("#instruction");
-			$instructionBtn.click(function() {
-				$instruction.slideToggle();
-			});
-
-			// Split.js & Layout 相關
 			var Orientation = {
 				Landscape: {},
 				Portrait: {},
@@ -252,14 +265,6 @@
 			layout();
 			// window.addEventListener("resize", layoutIfNeeded);
 			layoutBtn.addEventListener("click", toggleLayout);
-
-
-			// c0nsole toolbar 其他有獨立作用的按鈕
-			var c0nsole = document.getElementById("c0nsole");
-			var clearBtn = document.getElementById("clear-btn");
-			clearBtn.addEventListener("click", function() {
-				c0nsole.value = "";
-			});
 		})();
 	</script>
 
