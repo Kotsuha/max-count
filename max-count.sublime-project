@@ -13,7 +13,8 @@
 	{
 		"less2css":
 		{
-			"autoCompile": false,
+			"autoCompile": true,
+			"main_file": "styles.less",
 			// "minify": true,
 			"minName": true,
 			"outputDir": "auto"
