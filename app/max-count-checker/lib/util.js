@@ -25,7 +25,7 @@ class MyList {
 		const entries = [];
 		$rows.each((i, el) => {
 			const $row = $(el);
-			const entry = PlayDataEntry.createFromRow($row);
+			const entry = PlayDataEntry.createFromRow($row, $);
 			entries.push(entry);
 		});
 		return entries;

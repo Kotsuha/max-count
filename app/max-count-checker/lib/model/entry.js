@@ -87,12 +87,24 @@ addMethods(RankingEntry);
 
 const querystring = require("querystring");
 
-PlayDataEntry.createFromRow = function($row) {
+PlayDataEntry.createFromRow = function($row, $) {
 	const $cells = $row.find("td");
-	const $noCell = $cells.eq(0),
-	      $titleCell = $cells.eq(1),
-	      $clearCell = $cells.eq(2),
-	      $rankingCell = $cells.eq(4);
+
+	// 找出正確的 cell
+	// const $noCell = $cells.eq(0),
+	//       $titleCell = $cells.eq(1),
+	//       $clearCell = $cells.eq(2),
+	//       $rankingCell = $cells.eq(4);
+	// 因為這裡會根據玩家設定，有的欄位可能會不顯示，例如 "プレイ回数" 可以隱藏，所以不能直接抓第幾格
+	const $noCell      = $cells.eq(0);
+	const $titleCell   = $cells.filter((i, el) => $(el).text().indexOf("タイトル") !== -1).first();
+	const $clearCell   = $cells.filter(function(i, el) {
+		const text = $(el).text();
+		const b = text.indexOf("クリア") !== -1;
+		return b;
+	}).first();
+	const $rankingCell = $cells.filter((i, el) => $(el).text().indexOf("ランキング") !== -1).first();
+	
 	const no = $noCell.text(),
 	      title = $titleCell.text(),
 	      href = $titleCell.find("a").first().prop("href"),
